@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from crud import inventory, logistics, rfq
 from models.domain_models import LogisticsMilestone, LogisticsTracking, RfqStatus, RfqTransaction
 from schemas.rfq import RfqCreate
+from services.notifications import notify_rfq_approved, notify_rfq_created
 
 
 def create_rfq(db: Session, buyer_id: int, payload: RfqCreate) -> RfqTransaction:
@@ -19,7 +20,9 @@ def create_rfq(db: Session, buyer_id: int, payload: RfqCreate) -> RfqTransaction
         status_nego=RfqStatus.PENDING,
         total_harga=payload.tonase_diminta * stock.harga_per_ton,
     )
-    return rfq.create(db, order)
+    created = rfq.create(db, order)
+    notify_rfq_created(db, created)
+    return created
 
 
 def approve_rfq(db: Session, rfq_id: int, admin_id: int) -> RfqTransaction:
@@ -42,6 +45,7 @@ def approve_rfq(db: Session, rfq_id: int, admin_id: int) -> RfqTransaction:
                 updated_by=admin_id,
             ),
         )
+        notify_rfq_approved(db, order)
         db.flush()
         return order
     except Exception:

@@ -4,6 +4,7 @@ from core.security import hash_password, verify_password
 from crud import users
 from models.domain_models import User
 from schemas.auth import UserCreate
+from services.notifications import notify_welcome
 
 
 def register(db: Session, payload: UserCreate) -> User:
@@ -14,7 +15,9 @@ def register(db: Session, payload: UserCreate) -> User:
         role=payload.role,
         nama_perusahaan=payload.nama_perusahaan,
     )
-    return users.create(db, user)
+    created = users.create(db, user)
+    notify_welcome(db, created)
+    return created
 
 
 def authenticate(db: Session, email: str, password: str) -> User | None:

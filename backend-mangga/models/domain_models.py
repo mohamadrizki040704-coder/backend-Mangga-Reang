@@ -125,3 +125,16 @@ class LogisticsTracking(Base):
     updated_by: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="RESTRICT"))
 
     rfq: Mapped[RfqTransaction] = relationship(back_populates="tracking")
+
+
+class Notification(Base):
+    __tablename__ = "notifications"
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True, index=True)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), index=True)
+    title: Mapped[str] = mapped_column(String(150))
+    message: Mapped[str] = mapped_column(String(1000))
+    is_read: Mapped[bool] = mapped_column(Boolean, default=False, index=True)
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, index=True
+    )

@@ -6,6 +6,7 @@ from crud import logistics, rfq
 from db.session import get_db
 from models.domain_models import LogisticsTracking, Role, User
 from schemas.logistics import TrackingCreate, TrackingResponse
+from services.notifications import notify_tracking_update
 
 
 router = APIRouter()
@@ -34,7 +35,8 @@ def update_status(
     db: Session = Depends(get_db),
     admin: User = Depends(require_roles(Role.ADMIN_GUDANG)),
 ) -> TrackingResponse:
-    if rfq.get(db, rfq_id) is None:
+    order = rfq.get(db, rfq_id)
+    if order is None:
         raise HTTPException(status_code=404, detail="RFQ not found")
     event = logistics.create(
         db,
@@ -45,6 +47,7 @@ def update_status(
             updated_by=admin.id,
         ),
     )
+    notify_tracking_update(db, order, payload.status_milestone)
     db.commit()
     db.refresh(event)
     return event

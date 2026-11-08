@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from api.routes import auth, inventory, logistics, rfq
+from api.routes import auth, inventory, logistics, notifications, rfq
 from core.config import settings
 from db.session import get_db
 
@@ -26,6 +26,9 @@ app.include_router(auth.router, prefix="/api/auth", tags=["Authentication"])
 app.include_router(inventory.router, prefix="/api/mangga", tags=["Inventaris"])
 app.include_router(rfq.router, prefix="/api/rfq", tags=["RFQ"])
 app.include_router(logistics.router, prefix="/api/logistik", tags=["Logistik"])
+app.include_router(
+    notifications.router, prefix="/api/notifikasi", tags=["Notifikasi"]
+)
 
 
 @app.get("/")
