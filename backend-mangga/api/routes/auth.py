@@ -4,10 +4,11 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
+from api.deps import get_current_user
 from core.security import create_access_token
 from crud.users import get_by_email
 from db.session import get_db
-from models.domain_models import Role
+from models.domain_models import Role, User
 from schemas.auth import LoginRequest, TokenResponse, UserCreate, UserResponse
 from services.auth import authenticate, register
 
@@ -43,3 +44,8 @@ def login(payload: LoginRequest, db: Session = Depends(get_db)) -> TokenResponse
             headers={"WWW-Authenticate": "Bearer"},
         )
     return TokenResponse(access_token=create_access_token(user_id=user.id, role=user.role.value))
+
+
+@router.get("/me", response_model=UserResponse)
+def read_me(user: User = Depends(get_current_user)) -> UserResponse:
+    return user
