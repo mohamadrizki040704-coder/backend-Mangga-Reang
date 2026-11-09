@@ -82,6 +82,10 @@ Salin `.env.example` menjadi `.env`, kemudian isi:
 - `ACCESS_TOKEN_EXPIRE_MINUTES` sesuai kebutuhan environment.
 
 File `.env` diabaikan Git dan tidak boleh di-commit. Nilai pada `.env.example` hanya template dan bukan kredensial aktif.
+`DATABASE_URL` harus berisi connection URL database (misalnya
+`postgresql://...`), bukan URL HTTP API. Di Render, gunakan **Internal Database
+URL** dari PostgreSQL untuk environment variable service backend. Jangan
+menaruh URL API `https://...` pada `DATABASE_URL`.
 
 ### 4. Siapkan database
 
@@ -140,6 +144,9 @@ python -m alembic downgrade base
 ```
 
 Jangan menjalankan `downgrade base` pada database development yang berisi data.
+Jalankan perintah migrasi dari Render Shell pada service backend agar
+`DATABASE_URL` service tersedia; jika menjalankannya lokal, pastikan
+`DATABASE_URL` lokal menunjuk ke database PostgreSQL yang benar.
 
 ## Provisioning Admin Development
 
