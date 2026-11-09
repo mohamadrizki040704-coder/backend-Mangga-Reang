@@ -15,6 +15,7 @@ def test_register_and_login_use_camel_case(client: TestClient) -> None:
             "email": "buyer@example.com",
             "password": "buyerpass123",
             "namaLengkap": "Buyer Test",
+            "nomorTelepon": "+628123456789",
             "role": "BUYER_B2B",
             "namaPerusahaan": "PT Test",
         },
@@ -22,8 +23,15 @@ def test_register_and_login_use_camel_case(client: TestClient) -> None:
 
     assert response.status_code == 201
     assert response.json()["namaLengkap"] == "Buyer Test"
+    assert response.json()["nomorTelepon"] == "+628123456789"
     assert "hashedPassword" not in response.json()
-    assert login(client, "buyer@example.com", "buyerpass123")
+    token = login(client, "buyer@example.com", "buyerpass123")
+    profile = client.get(
+        "/api/auth/me",
+        headers=auth_headers(token),
+    )
+    assert profile.status_code == 200
+    assert profile.json()["nomorTelepon"] == "+628123456789"
 
 
 def test_register_rejects_admin_and_short_password(client: TestClient) -> None:

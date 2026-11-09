@@ -21,6 +21,7 @@
 Publik. Membuat user baru setelah email dan password divalidasi. Password
 di-hash dengan bcrypt. Role `ADMIN_GUDANG` harus dibuat melalui provisioning
 terkontrol, bukan endpoint publik.
+Field `nomorTelepon` opsional dan disimpan pada profil pengguna.
 
 **Error penting:** `409` bila email sudah digunakan, `403` bila role admin
 dikirim melalui register publik, dan `422` bila payload tidak valid.

@@ -58,6 +58,7 @@ class User(Base):
     email: Mapped[str] = mapped_column(String(320), unique=True, index=True)
     hashed_password: Mapped[str] = mapped_column(String(255))
     nama_lengkap: Mapped[str] = mapped_column(String(150))
+    nomor_telepon: Mapped[str | None] = mapped_column(String(30), nullable=True)
     role: Mapped[Role] = mapped_column(SqlEnum(Role), index=True)
     nama_perusahaan: Mapped[str | None] = mapped_column(String(200), nullable=True)
 

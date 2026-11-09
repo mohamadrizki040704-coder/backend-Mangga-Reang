@@ -12,6 +12,7 @@ def register(db: Session, payload: UserCreate) -> User:
         email=str(payload.email).lower(),
         hashed_password=hash_password(payload.password),
         nama_lengkap=payload.nama_lengkap,
+        nomor_telepon=payload.nomor_telepon,
         role=payload.role,
         nama_perusahaan=payload.nama_perusahaan,
     )
