@@ -14,8 +14,8 @@ RUN pip install --no-cache-dir "psycopg[binary]"
 # 5. Salin semua file proyek Anda ke dalam container
 COPY . .
 
-# 6. Buka port 8000
+# 6. Buka port aplikasi
 EXPOSE 8000
 
-# 7. Perintah utama untuk menyalakan FastAPI
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+# 7. Terapkan migrasi sebelum menerima request
+CMD ["sh", "-c", "python -m alembic upgrade head && exec uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]

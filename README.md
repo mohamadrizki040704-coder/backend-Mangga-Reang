@@ -122,6 +122,11 @@ Set-Location .\backend-mangga
 python -m uvicorn main:app --reload
 ```
 
+Container deployment menjalankan `python -m alembic upgrade head` sebelum
+menyalakan Uvicorn. Jika migrasi gagal, container berhenti dan error migrasi
+terlihat di log deployment; pastikan `DATABASE_URL` menunjuk ke database
+PostgreSQL yang benar.
+
 ## Menjalankan Test Otomatis
 
 Test backend menggunakan SQLite in-memory agar tidak mengubah database
